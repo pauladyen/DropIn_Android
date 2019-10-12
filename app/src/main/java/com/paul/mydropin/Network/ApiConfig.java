@@ -53,26 +53,42 @@ public interface ApiConfig {
     );
 
 
-    @GET("MakePayment")
+    @POST("MakePayment")
     Call<JsonObject> makePayment(
             @Query("data") String data,
             @Query("currency") String currency,
             @Query("value") String amount,
-            @Query("returnurl") String returnURL
+            @Query("returnurl") String returnURL,
+            @Query("channel") String channel
     );
 
-    @GET("PaymentDetails")
+    @POST("PaymentDetails")
     Call<JsonObject> paymentDetails(
-            @Query("paymentMethodType") String paymentMethodType,
+            @Query("type") String actionType,
             @Query("MD") String MD,
             @Query("PaRes") String PaRes,
             @Query("paymentData") String paymentData
     );
 
-    @GET("PaymentDetails")
+    @POST("PaymentDetails")
     Call<JsonObject> paymentDetails(
-            @Query("paymentMethodType") String paymentMethodType,
+            @Query("type") String actionType,
             @Query("payload") String payload
     );
+
+    @POST("PaymentDetails")
+    Call<JsonObject> paymentDetailsFingerPrint(
+            @Query("type") String actionType,
+            @Query("fingerprint") String fingerprint,
+            @Query("paymentData") String paymentData
+    );
+
+    @POST("PaymentDetails")
+    Call<JsonObject> paymentDetailsChallenge(
+            @Query("type") String actionType,
+            @Query("challengeResult") String challengeResult,
+            @Query("paymentData") String paymentData
+    );
+
 
 }

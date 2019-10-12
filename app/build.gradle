@@ -30,6 +30,7 @@ dependencies {implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "com.adyen.checkout:drop-in:3.4.0"
     implementation "com.adyen.checkout:card-ui:3.4.0"
+    implementation "com.adyen.checkout:3ds2:3.4.0"
 
     implementation "androidx.core:core-ktx:+"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.0.0"

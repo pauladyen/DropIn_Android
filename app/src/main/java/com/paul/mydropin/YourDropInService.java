@@ -2,6 +2,8 @@ package com.paul.mydropin;
 
 
 import android.util.Log;
+
+import com.adyen.checkout.adyen3ds2.Adyen3DS2Component;
 import com.adyen.checkout.dropin.service.CallResult;
 import com.adyen.checkout.dropin.service.DropInService;
 import com.google.gson.Gson;
@@ -19,7 +21,7 @@ public class YourDropInService extends DropInService {
 
     public static String paymentData;
 
-    public static String paymentMethodType;
+    public static String type;
 
     @Override
     public CallResult makePaymentsCall(JSONObject paymentComponentData) {
@@ -31,7 +33,7 @@ public class YourDropInService extends DropInService {
 
         Log.v("PaymentComponentData", data);
 
-        Call<JsonObject> call = getResponse.makePayment(data, MainActivity.curr, MainActivity.amo, EncodingUtil.encodeURIComponent("adyencheckout://com.paul.mydropin"));
+        Call<JsonObject> call = getResponse.makePayment(data, MainActivity.curr, MainActivity.amo, EncodingUtil.encodeURIComponent("adyencheckout://com.paul.mydropin"), "Android");
 
         try{
             Response<JsonObject> response = call.execute();
@@ -49,7 +51,11 @@ public class YourDropInService extends DropInService {
 
                         paymentData = paymentsResponse.getString("paymentData");
 
-                        paymentMethodType = paymentsResponse.getJSONObject("action").getString("paymentMethodType");
+                        type = paymentsResponse.getJSONObject("action").getString("type")
+                                + paymentsResponse.getJSONObject("action").getString("paymentMethodType");
+
+
+
 
                         return new CallResult(CallResult.ResultType.ACTION, paymentsResponse.getJSONObject("action").toString());
                     }else{
@@ -78,49 +84,74 @@ public class YourDropInService extends DropInService {
         try{
 
             Log.v("actionData",actionComponentData.toString(4));
-        Call<JsonObject> call;
 
-        if(paymentMethodType.equalsIgnoreCase("scheme")){
+            Call<JsonObject> call;
 
-            call = getResponse.paymentDetails(
-                    paymentMethodType,
-                    actionComponentData.getJSONObject("details").getString("MD"),
-                    actionComponentData.getJSONObject("details").getString("PaRes"),
-                    paymentData
-            );
+            if(type.equalsIgnoreCase("redirectscheme")){
+                call = getResponse.paymentDetails(
+                        type,
+                        actionComponentData.getJSONObject("details").getString("MD"),
+                        actionComponentData.getJSONObject("details").getString("PaRes"),
+                        paymentData
+                );
+            }else if(type.equalsIgnoreCase("redirectideal")){
+                call = getResponse.paymentDetails(
+                        type,
+                        actionComponentData.getJSONObject("details").getString("payload")
+                );
+            }else if (type.equalsIgnoreCase("threeDS2Fingerprintscheme")){
 
-        }else{
-            call = getResponse.paymentDetails(
-                    paymentMethodType,
-                    actionComponentData.getJSONObject("details").getString("payload")
-            );
-        }
+                call = getResponse.paymentDetailsFingerPrint(
+                        type,
+                        actionComponentData.getJSONObject("details").getString("threeds2.fingerprint"),
+                        paymentData
+                );
+            }else if (type.equalsIgnoreCase("threeDS2Challengescheme")){
 
-        //String data = EncodingUtil.encodeURIComponent(paymentComponentData.toString());
+                call = getResponse.paymentDetailsChallenge(
+                        type,
+                        actionComponentData.getJSONObject("details").getString("threeds2.challengeResult"),
+                        paymentData
+                );
+            }else {
+                call = null;
+            }
+
 
             Response<JsonObject> response = call.execute();
 
             if (response.isSuccessful() && response.body() != null){
 
+
                 String json = new Gson().toJson(response.body());
 
-                JSONObject paymentsResponse = new JSONObject(json);
 
-                Log.v("PaymentsDetailsResponse", paymentsResponse.toString(4));
+                JSONObject paymentsDetailResponse = new JSONObject(json);
+
+                Log.v("PaymentsDetailsResponse", paymentsDetailResponse.toString(4));
 
 
-                return new CallResult(CallResult.ResultType.FINISHED, json);
+                if(json.contains("action")){
+
+                    paymentData = paymentsDetailResponse.getString("paymentData");
+
+                    type = paymentsDetailResponse.getJSONObject("action").getString("type")
+                            + paymentsDetailResponse.getJSONObject("action").getString("paymentMethodType");
+                    return new CallResult(CallResult.ResultType.ACTION, paymentsDetailResponse.getJSONObject("action").toString());
+                }else{
+                    return new CallResult(CallResult.ResultType.FINISHED, json);
+                }
+
 
 
             }else {
-                Log.e("PaymentsDetailsResponse", response.message());
+                Log.e("FailedDetailsResponse", response.message());
                 return new CallResult(CallResult.ResultType.FINISHED, response.message());
             }
 
 
-
         }catch (Exception e){
-            Log.e("PaymentsDetailsResponse",e.toString());
+            Log.e("DetailResponseException",e.toString());
             return new CallResult(CallResult.ResultType.FINISHED, e.toString());
         }
 

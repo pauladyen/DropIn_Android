@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     private void getPaymentMethods(String country, String currency, String amount){
         ApiConfig getResponse = AppConfig.getRetrofit().create(ApiConfig.class);
 
-        Call<JsonObject> call = getResponse.getPaymentMethods(country, currency, amount, "ANDROID");
+        Call<JsonObject> call = getResponse.getPaymentMethods(country, currency, amount, "Android");
 
         call.enqueue(new Callback<JsonObject>() {
             @Override
@@ -156,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
                             DropInConfiguration dropInConfiguration = new DropInConfiguration.Builder(MainActivity.this, YourDropInService.class)
                                     .addCardConfiguration(cardConfiguration)
                                     .build();
+
+
 
 
                             dropInConfiguration.setResultHandlerIntent(resultsIntent);
