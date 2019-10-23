@@ -11,6 +11,8 @@ import com.google.gson.JsonObject;
 import com.paul.mydropin.Network.ApiConfig;
 import com.paul.mydropin.Network.AppConfig;
 import com.paul.mydropin.Network.EncodingUtil;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.UUID;
 import retrofit2.Call;
@@ -29,7 +31,14 @@ public class YourDropInService extends DropInService {
 
         ApiConfig getResponse = AppConfig.getRetrofit().create(ApiConfig.class);
 
-        String data = EncodingUtil.encodeURIComponent(paymentComponentData.toString());
+        String data;
+
+        try {
+            data = EncodingUtil.encodeURIComponent(paymentComponentData.getJSONObject("paymentMethod").toString());
+        }catch (JSONException e){
+            Log.e("Exception", e.toString());
+            data = null;
+        }
 
         Log.v("PaymentComponentData", data);
 
