@@ -57,6 +57,7 @@ public interface ApiConfig {
     Call<JsonObject> makePayment(
             @Query("data") String data,
             @Query("currency") String currency,
+            @Query("countryCode") String country,
             @Query("value") String amount,
             @Query("returnurl") String returnURL,
             @Query("channel") String channel
@@ -74,6 +75,13 @@ public interface ApiConfig {
     Call<JsonObject> paymentDetails(
             @Query("type") String actionType,
             @Query("payload") String payload
+    );
+
+    @POST("PaymentDetails")
+    Call<JsonObject> paymentDetails_klarna_account(
+            @Query("type") String actionType,
+            @Query("redirectResult") String redirectResult,
+            @Query("paymentData") String paymentData
     );
 
     @POST("PaymentDetails")

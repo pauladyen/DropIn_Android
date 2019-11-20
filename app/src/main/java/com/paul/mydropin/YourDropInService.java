@@ -42,7 +42,7 @@ public class YourDropInService extends DropInService {
 
         Log.v("PaymentComponentData", data);
 
-        Call<JsonObject> call = getResponse.makePayment(data, MainActivity.curr, MainActivity.amo, EncodingUtil.encodeURIComponent("adyencheckout://com.paul.mydropin"), "Android");
+        Call<JsonObject> call = getResponse.makePayment(data, MainActivity.curr, MainActivity.cc, MainActivity.amo, EncodingUtil.encodeURIComponent("adyencheckout://com.paul.mydropin"), "Android");
 
         try{
             Response<JsonObject> response = call.execute();
@@ -120,6 +120,13 @@ public class YourDropInService extends DropInService {
                 call = getResponse.paymentDetailsChallenge(
                         type,
                         actionComponentData.getJSONObject("details").getString("threeds2.challengeResult"),
+                        paymentData
+                );
+            }else if (type.equalsIgnoreCase("redirectklarna_account")){
+
+                call = getResponse.paymentDetails_klarna_account(
+                        type,
+                        actionComponentData.getJSONObject("details").getString("redirectResult"),
                         paymentData
                 );
             }else {

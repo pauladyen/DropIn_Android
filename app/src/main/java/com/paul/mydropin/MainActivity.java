@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import com.adyen.checkout.base.model.PaymentMethodsApiResponse;
 import com.adyen.checkout.card.CardConfiguration;
+import com.adyen.checkout.core.api.Environment;
 import com.adyen.checkout.dropin.DropIn;
 import com.adyen.checkout.dropin.DropInConfiguration;
 import com.google.gson.Gson;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static String curr;
     public static String amo;
+    public static String cc;
+
     Intent resultsIntent;
 
     Boolean dropIn;
@@ -76,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
                 curr = currency.getText().toString().toUpperCase();
                 amo = amount.getText().toString();
+                cc = country.getText().toString();
 
 //                GetPaymentMethods get = new GetPaymentMethods();
 //                get.execute(curr,
@@ -93,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -154,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                             DropInConfiguration dropInConfiguration = new DropInConfiguration.Builder(MainActivity.this, YourDropInService.class)
+
                                     .addCardConfiguration(cardConfiguration)
                                     .build();
 
@@ -163,6 +170,8 @@ public class MainActivity extends AppCompatActivity {
                             dropInConfiguration.setResultHandlerIntent(resultsIntent);
 
                             DropIn.startPayment(MainActivity.this, paymentMethodsApiResponse, dropInConfiguration);
+
+
 
                         }catch (JSONException err){
                             Log.d("Error", err.toString());
