@@ -3,7 +3,6 @@ package com.paul.mydropin;
 
 import android.util.Log;
 
-import com.adyen.checkout.adyen3ds2.Adyen3DS2Component;
 import com.adyen.checkout.dropin.service.CallResult;
 import com.adyen.checkout.dropin.service.DropInService;
 import com.google.gson.Gson;
@@ -34,13 +33,14 @@ public class YourDropInService extends DropInService {
         String data;
 
         try {
+            Log.v("PaymentComponentData", paymentComponentData.getJSONObject("paymentMethod").toString());
             data = EncodingUtil.encodeURIComponent(paymentComponentData.getJSONObject("paymentMethod").toString());
         }catch (JSONException e){
             Log.e("Exception", e.toString());
             data = null;
         }
 
-        Log.v("PaymentComponentData", data);
+
 
         Call<JsonObject> call = getResponse.makePayment(data, MainActivity.curr, MainActivity.cc, MainActivity.amo, EncodingUtil.encodeURIComponent("adyencheckout://com.paul.mydropin"), "Android");
 
@@ -122,9 +122,9 @@ public class YourDropInService extends DropInService {
                         actionComponentData.getJSONObject("details").getString("threeds2.challengeResult"),
                         paymentData
                 );
-            }else if (type.equalsIgnoreCase("redirectklarna_account")){
+            }else if (type.equalsIgnoreCase("redirectklarna_account")  ||  type.equalsIgnoreCase("redirectklarna_paynow")){
 
-                call = getResponse.paymentDetails_klarna_account(
+                call = getResponse.paymentDetailsKlarna(
                         type,
                         actionComponentData.getJSONObject("details").getString("redirectResult"),
                         paymentData

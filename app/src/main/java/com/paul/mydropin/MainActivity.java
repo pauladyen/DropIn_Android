@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
                 curr = currency.getText().toString().toUpperCase();
                 amo = amount.getText().toString();
-                cc = country.getText().toString();
+                cc = country.getText().toString().toUpperCase();
 
 //                GetPaymentMethods get = new GetPaymentMethods();
 //                get.execute(curr,

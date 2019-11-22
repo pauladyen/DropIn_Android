@@ -78,7 +78,7 @@ public interface ApiConfig {
     );
 
     @POST("PaymentDetails")
-    Call<JsonObject> paymentDetails_klarna_account(
+    Call<JsonObject> paymentDetailsKlarna(
             @Query("type") String actionType,
             @Query("redirectResult") String redirectResult,
             @Query("paymentData") String paymentData
