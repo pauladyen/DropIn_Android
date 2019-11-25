@@ -122,7 +122,7 @@ public class YourDropInService extends DropInService {
                         actionComponentData.getJSONObject("details").getString("threeds2.challengeResult"),
                         paymentData
                 );
-            }else if (type.equalsIgnoreCase("redirectklarna_account")  ||  type.equalsIgnoreCase("redirectklarna_paynow")){
+            }else if (type.equalsIgnoreCase("redirectklarna_account")  ||  type.equalsIgnoreCase("redirectklarna_paynow")  ||  type.equalsIgnoreCase("redirectklarna")){
 
                 call = getResponse.paymentDetailsKlarna(
                         type,
