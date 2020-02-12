@@ -15,6 +15,7 @@ import com.adyen.checkout.card.CardConfiguration;
 import com.adyen.checkout.core.api.Environment;
 import com.adyen.checkout.dropin.DropIn;
 import com.adyen.checkout.dropin.DropInConfiguration;
+import com.adyen.checkout.googlepay.GooglePayConfiguration;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.paul.mydropin.Network.ApiConfig;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     JSONObject jsonPayMethodsResponse;
 
     CardConfiguration cardConfiguration;
+    GooglePayConfiguration googlePayConfiguration;
 
 
     @Override
@@ -64,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
 
         cardConfiguration = new CardConfiguration.Builder(MainActivity.this, "10001|BD67BF5FDCD84F2CD99DD452A76AFC999CA060A187A9A527BA8F72743BAC53BA0362EA7A01AF4612A8FE7B736D9F5B02C65414707A4344D9A666AFCFF33DAB7C387B997D4FE1FABA3502BD604E8793F5CD657C19D822F133E09C48C360E302E5865641FB70DA304E4C067C95361F4181095E61DDF943518FD4811C85C81D7424AF5A0CB66C25E8F1285075F92C2EA4C143E8B1DF6DB2F1CF0B992B5DFBF7FD7419FCBA1421E87A245F42A52DE253E85FB2BE446911214A02A9B40168F354BAC7D742C77B3F99B093FDDD576896B53B32B35419AE9BF2F795D2A3CF2B27C8F466D8D77998B526842FFAF9F188DB5471079EC222590BA298E992C315AEEA44BCCF")
                 .build();
+
+        googlePayConfiguration = new GooglePayConfiguration.Builder(MainActivity.this, "PaulAsiimwe").build();
 
         resultsIntent = new Intent(MainActivity.this, ResultsPage.class);
 
@@ -159,9 +163,12 @@ public class MainActivity extends AppCompatActivity {
                             PaymentMethodsApiResponse paymentMethodsApiResponse = PaymentMethodsApiResponse.SERIALIZER.deserialize(jsonPayMethodsResponse);
 
 
+
+
                             DropInConfiguration dropInConfiguration = new DropInConfiguration.Builder(MainActivity.this, YourDropInService.class)
 
                                     .addCardConfiguration(cardConfiguration)
+                                    .addGooglePayConfiguration(googlePayConfiguration)
                                     .build();
 
 
